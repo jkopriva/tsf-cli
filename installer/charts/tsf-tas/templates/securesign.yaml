@@ -1,6 +1,5 @@
 
 {{- $secureSign := .Values.trustedArtifactSigner.secureSign -}}
-{{- if $secureSign.enabled }}
 ---
 apiVersion: rhtas.redhat.com/v1alpha1
 kind: Securesign
@@ -21,6 +20,16 @@ spec:
           IssuerURL: "{{ $secureSign.fulcio.oidc.issuerURL }}"
           ClientID: {{ $secureSign.fulcio.oidc.clientID }}
           Type: email
+{{- $issuer := "https://kubernetes.default.svc" -}}
+{{- $configmap := lookup "v1" "ConfigMap" "openshift-kube-apiserver" "config" -}}
+{{- if $configmap -}}
+  {{- $configYaml := index $configmap.data "config.yaml" | fromYaml -}}
+  {{- $issuer = index $configYaml.apiServerArguments "service-account-issuer" | first -}}
+{{- end }}
+        - ClientID: sigstore
+          Issuer: {{ $issuer }}
+          IssuerURL: {{ $issuer }}
+          Type: kubernetes
   rekor:
     externalAccess:
       enabled: true
@@ -39,4 +48,3 @@ spec:
       - name: rekor.pub
       - name: ctfe.pub
       - name: fulcio_v1.crt.pem
-{{- end }}
