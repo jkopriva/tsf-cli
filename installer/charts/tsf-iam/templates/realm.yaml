@@ -87,6 +87,30 @@ data:
     {{- $oidcCredentialsTPA = mergeOverwrite $oidcCredentialsTPA (dict $k $s) }}
   {{ $k }}: {{ $s }}
   {{- end }}
+#
+# Authentication Integration Secret
+#
+#   Creates a secret with realm OIDC details.
+#
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: keycloak
+  namespace: {{
+    required "iam.integrationSecret.namespace is required"
+      .Values.iam.integrationSecret.namespace
+  }}
+  name: tsf-trustificationauth-integration
+type: Opaque
+stringData:
+  oidc_issuer_url: {{
+    required "iam.keycloakCR.trustedProfileAnalyzerRealm.oidcIssuerURL is required"
+      $tpa.oidcIssuerURL
+  }}
+  oidc_client_id: cli
+  oidc_client_secret: {{ get $oidcCredentialsTPA "cli" | b64dec }}
 {{- end }}
 #
 # Realm Admin

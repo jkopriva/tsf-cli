@@ -116,6 +116,8 @@ infrastructure:
 iam:
   enabled: {{ $keycloakEnabled }}
   namespace: {{ $keycloakNamespace }}
+  integrationSecret:
+    namespace: {{ .Installer.Namespace }}
   oauthClientName: keycloak-broker
   oathClientAlias: {{ $clientAlias }}
   oauthSharedSecret: {{ $sharedSecret }}

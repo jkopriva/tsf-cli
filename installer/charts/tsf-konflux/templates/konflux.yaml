@@ -5,6 +5,11 @@
   {{- $applicationURL = (get $secretData "htmlURL") | b64dec | toString -}}
 {{- end }}
 
+{{- /* Lookup OIDC integration secret to get URLs */ -}}
+{{- $oidcSecretObj := (lookup "v1" "Secret" .Values.konflux.tsf.namespace "tsf-trustificationauth-integration") | default dict -}}
+{{- $secretData := required (printf "Secret 'tsf-trustificationauth-integration' not found in namespace '%s'" .Values.konflux.tsf.namespace) (get $oidcSecretObj "data") | default dict -}}
+{{- $trustifyOIDCIssuerUrl := required (printf "oidc_issuer_url not found in secret 'tsf-trustificationauth-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "oidc_issuer_url") | b64dec | toString -}}
+
 {{- /* Lookup Trusted Artifact Signer integration secret to get URLs */ -}}
 {{- $tasSecretObj := (lookup "v1" "Secret" .Values.konflux.tsf.namespace "tsf-tas-integration") | default dict -}}
 {{- $secretData := required (printf "Secret 'tsf-tas-integration' not found in namespace '%s'" .Values.konflux.tsf.namespace) (get $tasSecretObj "data") | default dict -}}
@@ -14,6 +19,7 @@
 {{- $rekorExternalUrl := required (printf "rekor_url not found in secret 'tsf-tas-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "rekor_url") | b64dec | toString -}}
 {{- $tufInternalUrl := required (printf "tuf_service_url not found in secret 'tsf-tas-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "tuf_service_url") | b64dec | toString -}}
 {{- $tufExternalUrl := required (printf "tuf_url not found in secret 'tsf-tas-integration' in namespace '%s'" .Values.konflux.tsf.namespace) (get $secretData "tuf_url") | b64dec | toString -}}
+
 {{- /* Lookup Trusted Profile Analyzer integration secret to get URLs */ -}}
 {{- $tpaSecretObj := (lookup "v1" "Secret" .Values.konflux.tsf.namespace "tsf-trustification-integration") | default dict -}}
 {{- $secretData := required (printf "Secret 'tsf-trustification-integration' not found in namespace '%s'" .Values.konflux.tsf.namespace) (get $tpaSecretObj "data") | default dict -}}
@@ -53,6 +59,7 @@ spec:
           rekorExternalUrl: {{ $rekorExternalUrl | quote }}
           tufInternalUrl: {{ $tufInternalUrl | quote }}
           tufExternalUrl: {{ $tufExternalUrl | quote }}
+          trustifyOIDCIssuerUrl: {{ $trustifyOIDCIssuerUrl | quote }}
           trustifyServerInternalUrl: {{ $trustifyServiceUrl | quote }}
           trustifyServerExternalUrl: {{ $trustifyUrl | quote }}
       publicInfo:

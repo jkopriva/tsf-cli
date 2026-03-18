@@ -5,6 +5,9 @@
 iam:
   enabled: false
   namespace: __OVERWRITE_ME__
+  # Authentication integration secret created by realm import.
+  integrationSecret:
+    namespace: __OVERWRITE_ME__
   instances: 1
   database:
     host: __OVERWRITE_ME__
