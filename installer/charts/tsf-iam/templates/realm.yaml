@@ -1718,7 +1718,21 @@ spec:
     failureFactor: 30
     groups: []
     identityProviderMappers: []
-    identityProviders: []
+    identityProviders: [
+        {
+          "alias": {{ .Values.iam.oathClientAlias | quote }},
+          "displayName": "OpenShift Login",
+          "providerId": "openshift-v4",
+          "enabled": true,
+          "trustEmail": true,
+          "config": {
+            "baseUrl": "https://kubernetes.default.svc",
+            "clientId": {{ .Values.iam.oauthClientName | quote }},
+            "clientSecret": {{ .Values.iam.oauthSharedSecret| quote }},
+            "useJwksUrl": "true"
+          }
+        }
+      ]
     internationalizationEnabled: false
     loginWithEmailAllowed: true
     maxDeltaTimeSeconds: 43200

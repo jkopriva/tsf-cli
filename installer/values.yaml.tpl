@@ -109,10 +109,17 @@ infrastructure:
   {{- $protocol = "http" }}
 {{- end }}
 {{- $tpaOIDCIssuerURL := printf "%s://%s/realms/%s" $protocol $keycloakRouteHost $realmsName }}
+{{- $clientAlias := "ocp-federation" }}
+{{- $ocpBrokerRedirectUrl := printf "%s://%s/realms/%s/broker/%s/endpoint" $protocol $keycloakRouteHost $realmsName $clientAlias }}
+{{- $sharedSecret := randAlphaNum 32 }}
 
 iam:
   enabled: {{ $keycloakEnabled }}
   namespace: {{ $keycloakNamespace }}
+  oauthClientName: keycloak-broker
+  oathClientAlias: {{ $clientAlias }}
+  oauthSharedSecret: {{ $sharedSecret }}
+  oauthBrokerRedirectUrl: {{ $ocpBrokerRedirectUrl }}
   instances: 1
   database:
     host: keycloak-pgsql
