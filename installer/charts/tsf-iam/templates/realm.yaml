@@ -135,6 +135,17 @@ data:
   username: {{ $adminUsername | b64enc }}
   password: {{ $adminPassword }}
 ---
+{{- $sharedSecret := include "tsf-iam.oauthSecret" . }}
+
+apiVersion: oauth.openshift.io/v1
+kind: OAuthClient
+metadata:
+  name: {{ .Values.iam.oauthClientName }}
+secret: {{ $sharedSecret | quote }}
+redirectURIs:
+  - "{{ .Values.iam.oauthBrokerRedirectUrl }}"
+grantMethod: auto
+---
 apiVersion: k8s.keycloak.org/v2alpha1
 kind: KeycloakRealmImport
 metadata:
@@ -315,6 +326,9 @@ spec:
             priority: 10
             requirement: ALTERNATIVE
             userSetupAllowed: false
+          - authenticator: "idp-auto-link"
+            priority: 15
+            requirement: "ALTERNATIVE"
           - authenticatorFlow: true
             autheticatorFlow: true
             flowAlias: Handle Existing Account
@@ -358,6 +372,7 @@ spec:
             requirement: DISABLED
             userSetupAllowed: false
           - authenticator: identity-provider-redirector
+            authenticatorConfig: ocp-redirect-config
             authenticatorFlow: false
             autheticatorFlow: false
             priority: 25
@@ -446,7 +461,7 @@ spec:
             authenticatorFlow: false
             autheticatorFlow: false
             priority: 10
-            requirement: REQUIRED
+            requirement: DISABLED
             userSetupAllowed: false
           - authenticatorFlow: true
             autheticatorFlow: true
@@ -589,7 +604,10 @@ spec:
           require.password.update.after.registration: "false"
       - alias: review profile config
         config:
-          update.profile.on.first.login: missing
+          update.profile.on.first.login: "false"
+      - alias: "ocp-redirect-config"
+        config:
+          defaultProvider: {{ .Values.iam.oathClientAlias | quote }}
     browserFlow: browser
     browserSecurityHeaders:
       contentSecurityPolicy: frame-src 'self'; frame-ancestors 'self'; object-src
@@ -1742,21 +1760,18 @@ spec:
     failureFactor: 30
     groups: []
     identityProviderMappers: []
-    identityProviders: [
-        {
-          "alias": {{ .Values.iam.oathClientAlias | quote }},
-          "displayName": "OpenShift Login",
-          "providerId": "openshift-v4",
-          "enabled": true,
-          "trustEmail": true,
-          "config": {
-            "baseUrl": "https://kubernetes.default.svc",
-            "clientId": {{ .Values.iam.oauthClientName | quote }},
-            "clientSecret": {{ .Values.iam.oauthSharedSecret| quote }},
-            "useJwksUrl": "true"
-          }
-        }
-      ]
+    identityProviders:
+      - alias: {{ .Values.iam.oathClientAlias }}
+        config:
+          baseUrl: https://kubernetes.default.svc
+          clientId: {{ .Values.iam.oauthClientName }}
+          clientSecret: {{ $sharedSecret | quote }}
+          syncMode: "FORCE"
+          useJwksUrl: "true"
+        displayName: OpenShift Login
+        enabled: true
+        providerId: openshift-v4
+        trustEmail: true
     internationalizationEnabled: false
     loginWithEmailAllowed: true
     maxDeltaTimeSeconds: 43200

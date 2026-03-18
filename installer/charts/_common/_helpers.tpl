@@ -67,3 +67,15 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Get the existing OAuthClient secret if it exists, otherwise generate one.
+*/}}
+{{- define "tsf-iam.oauthSecret" -}}
+{{- $existing := (lookup "oauth.openshift.io/v1" "OAuthClient" "" "keycloak-broker") }}
+{{- if $existing }}
+{{- $existing.secret }}
+{{- else }}
+{{- randAlphaNum 32 }}
+{{- end }}
+{{- end }}

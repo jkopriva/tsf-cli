@@ -1,8 +1,0 @@
-apiVersion: oauth.openshift.io/v1
-kind: OAuthClient
-metadata:
-  name: {{ .Values.iam.oauthClientName }}
-secret: {{ .Values.iam.oauthSharedSecret | quote }}
-redirectURIs:
-  - "{{ .Values.iam.oauthBrokerRedirectUrl }}"
-grantMethod: auto

@@ -111,7 +111,6 @@ infrastructure:
 {{- $tpaOIDCIssuerURL := printf "%s://%s/realms/%s" $protocol $keycloakRouteHost $realmsName }}
 {{- $clientAlias := "ocp-federation" }}
 {{- $ocpBrokerRedirectUrl := printf "%s://%s/realms/%s/broker/%s/endpoint" $protocol $keycloakRouteHost $realmsName $clientAlias }}
-{{- $sharedSecret := randAlphaNum 32 }}
 
 iam:
   enabled: {{ $keycloakEnabled }}
@@ -120,7 +119,6 @@ iam:
     namespace: {{ .Installer.Namespace }}
   oauthClientName: keycloak-broker
   oathClientAlias: {{ $clientAlias }}
-  oauthSharedSecret: {{ $sharedSecret }}
   oauthBrokerRedirectUrl: {{ $ocpBrokerRedirectUrl }}
   instances: 1
   database:
