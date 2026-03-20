@@ -53,6 +53,7 @@ spec:
           enableKeylessSigning: true
           defaultOIDCIssuer: https://kubernetes.default.svc
           buildIdentityRegexp: "^https://kubernetes.io/namespaces/[a-z0-9-]+-tenant/serviceaccounts/build-pipeline-[a-z0-9-]+$"
+          tektonChainsIdentity: https://kubernetes.io/namespaces/openshift-pipelines/serviceaccounts/tekton-chains-controller
           fulcioInternalUrl: {{ $fulcioInternalUrl | quote }}
           fulcioExternalUrl: {{ $fulcioExternalUrl | quote }}
           rekorInternalUrl: {{ $rekorInternalUrl | quote }}
