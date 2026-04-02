@@ -1,12 +1,7 @@
-{{- range (list "build-service" "integration-service" "image-controller") }}
+{{- range (list "build-service" "default-tenant" "integration-service" "image-controller") }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ . }}
 {{- end }}
----
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: default-tenant
