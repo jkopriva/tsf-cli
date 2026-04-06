@@ -1,8 +1,10 @@
 {{- define "pipelines.TektonConfigPatch" -}}
   {{- $tasSecretObj := (lookup "v1" "Secret" .Values.pipelines.tsf.namespace "tsf-tas-integration") | default dict -}}
   {{- $secretData := required (printf "Secret 'tsf-tas-integration' not found in namespace '%s'" .Values.pipelines.tsf.namespace) (get $tasSecretObj "data") | default dict -}}
-  {{- $fulcio_url := required (printf "fulcio_url not found in secret 'tsf-tas-integration' in namespace '%s'" .Values.pipelines.tsf.namespace) (get $secretData "fulcio_url") | b64dec | toString -}}
-  {{- $rekor_url := required (printf "rekor_url not found in secret 'tsf-tas-integration' in namespace '%s'" .Values.pipelines.tsf.namespace) (get $secretData "rekor_url") | b64dec | toString -}}
+  {{- $fulcio_raw := (get $secretData "fulcio_service_url") | default (get $secretData "fulcio_url") -}}
+  {{- $fulcio_url := required (printf "Neither fulcio_service_url nor fulcio_url found in secret 'tsf-tas-integration' in namespace '%s'" .Values.pipelines.tsf.namespace) $fulcio_raw | b64dec | toString -}}
+  {{- $rekor_raw := (get $secretData "rekor_service_url") | default (get $secretData "rekor_url") -}}
+  {{- $rekor_url := required (printf "Neither rekor_service_url nor rekor_url found in secret 'tsf-tas-integration' in namespace '%s'" .Values.pipelines.tsf.namespace) $rekor_raw | b64dec | toString -}}
 metadata:
   annotations:
     meta.helm.sh/release-name: {{ .Chart.Name }}
