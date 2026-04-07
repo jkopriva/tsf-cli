@@ -8,7 +8,7 @@ Access the Konflux web interface to verify that the deployment succeeded and to 
 
 ### Prerequisites
 
-- The TSF deployment has completed.
+- You have completed the TSF deployment.
 - You have the Konflux UI URL from the deployment output.
 
 ### Steps
@@ -34,7 +34,7 @@ Access the Konflux web interface to verify that the deployment succeeded and to 
 
 The Konflux dashboard loads and displays the **Get started with Konflux** landing page with options to view namespaces and access the Release Monitor Board.
 
-## Verifying the deployment
+## Verify the deployment
 
 Verify that all TSF operators, secrets, and routes are running correctly on your OCP cluster. Use this procedure to confirm a successful installation or to diagnose which components need attention.
 
@@ -189,7 +189,7 @@ Locate the Cert-Manager entry and change `manageSubscription: true` to `manageSu
 
 **Cause:** Some Helm charts take several minutes to deploy, especially when pulling container images for the first time. The installer does not display a progress indicator during these periods.
 
-**Resolution:** The deployment is likely still running. In a separate terminal, monitor the pod status:
+**Resolution:** The deployment is still running. In a separate terminal, monitor the pod status:
 
 ```bash
 oc get pods -A --watch
