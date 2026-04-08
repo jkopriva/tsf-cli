@@ -14,4 +14,4 @@ ui:
     snapshot: true
 
 output:
-  dir: ../build/site
+  dir: build/site

@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - 'docs/**'
+      - 'antora-playbook.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'docs/**'
+      - 'antora-playbook.yml'
 
 permissions:
   contents: read
@@ -37,7 +39,7 @@ jobs:
         run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1
 
       - name: Build site
-        run: antora --fetch docs/antora-playbook.yml
+        run: antora --fetch antora-playbook.yml
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'
