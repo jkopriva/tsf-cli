@@ -8,8 +8,8 @@ After installing and verifying TSF, onboard your first application to see the se
 
 - TSF is [installed](installing.md) and [verified](verifying-and-accessing.md) on your OCP cluster.
 - You can log in to the Konflux UI.
-- You have a GitHub repository with source code that you want to build. If you do not have one, fork a sample application repository to your GitHub organization.
-- You have installed the GitHub App on the GitHub organization that contains your repository.
+- You have a Git repository with source code that you want to build. If you do not have one, fork the [sample-component-golang](https://github.com/konflux-ci/sample-component-golang) repository.
+- Your Git provider integration (GitHub or GitLab) is configured as part of the [installation](installing.md).
 
 ## Log in to the Konflux UI
 
@@ -39,7 +39,7 @@ A component maps to a single Git repository and branch. When you create a compon
 
 1. From your application page, click **Add component**.
 
-2. Enter the Git repository URL for your source code.
+2. Enter the Git repository URL for your source code. For example: `https://github.com/konflux-ci/sample-component-golang`.
 
 3. Select the branch to build from.
 
@@ -55,7 +55,7 @@ After you create a component, Konflux automatically:
 
 2. **Configures a default integration test pipeline.** This pipeline runs automatically after each build to evaluate the artifacts against the configured policy. The integration test definition is stored as a Custom Resource in OpenShift and is not visible in your Git repository.
 
-3. **Creates GitHub checks** on the pull request. Two checks appear:
+3. **Creates CI checks** on the pull request (GitHub checks or GitLab webhooks, depending on your Git provider). Two checks appear:
    - One for the build pipeline status
    - One for the integration test pipeline status
 
@@ -72,7 +72,7 @@ The release configuration process involves creating various Custom Resources in 
 Log in to the OCP cluster as the Platform Engineer (cluster admin) and run the script:
 
 ```bash
-./setup-release.sh
+./setup-release.sh --application <application_name> --component <component_name>
 ```
 
 This script creates the necessary release plan, release policy, and release pipeline resources.
