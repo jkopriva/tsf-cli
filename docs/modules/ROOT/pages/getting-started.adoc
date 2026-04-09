@@ -51,11 +51,18 @@ For more details, see link:https://konflux-ci.dev/docs/building/creating/#with-t
 
 After you create a component, {KonfluxName} automatically:
 
-. **Sends a pull request** to your Git repository. This PR adds a build pipeline definition (`.tekton/` directory) that triggers on pull request and push events targeting the onboarded branch.
+. **Sends a pull request** to your Git repository. This PR adds Tekton pipeline definitions (`.tekton/` directory) that trigger on pull request and push events targeting the onboarded branch. Those pipelines control the lifecycle of changes submitted to the repository.
 
-. **Configures a default integration test pipeline.** This pipeline runs automatically after each build to evaluate the artifacts against the configured policy. The integration test definition is stored as a Custom Resource in OpenShift and is not visible in your Git repository.
+. **Configures a default integration test pipeline.** This pipeline runs automatically after each build to evaluate the artifacts against the configured policy. The integration test definition is stored as a Custom Resource in {OCPShortName} and is not visible in your Git repository.
++
+To view the integration test Custom Resource:
++
+[source,bash]
+----
+oc get integrationtestscenarios -n <tenant-namespace>
+----
 
-. **Creates CI checks** on the pull request (GitHub checks or GitLab webhooks, depending on your Git provider). Two checks appear:
+. **Creates CI checks** on the pull request. {KonfluxName} creates checks for both GitHub and GitLab. The difference is how the integration with {KonfluxName} is managed: for GitHub, a GitHub App is created ahead of time during installation; for GitLab, the webhook is created when the repository is onboarded. Two checks appear:
 * One for the build pipeline status
 * One for the integration test pipeline status
 +

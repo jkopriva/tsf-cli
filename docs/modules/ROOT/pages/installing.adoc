@@ -21,7 +21,7 @@ Start the {TSFShortName} installer container using Podman. The installer runs in
 ----
 podman run -it --rm --env-file tsf.env \
   --entrypoint bash -p 8228:8228 --pull always \
-  {TSFInstallerImage} --login
+  quay.io/redhat-ads/tsf-cli:unstable --login
 ----
 +
 This command pulls the latest installer image and opens an interactive shell session inside the container. The `--login` flag sources the shell profile, and port 8228 is exposed for the GitHub App creation workflow.
@@ -93,6 +93,8 @@ products:
 
 NOTE: The {TSFShortName} installer assumes a fresh cluster. If other {TSFShortName}-managed operators are already installed (such as Red Hat OpenShift Pipelines or {RHTASName}), set `manageSubscription: false` for each pre-installed component to prevent conflicts.
 
+The `tsf-config` ConfigMap in the `tsf` namespace controls which components are installed. Each component has an `enabled` flag and a `manageSubscription` property. Set `manageSubscription` to `false` for any component that is already installed on the cluster.
+
 === Verification
 
 Verify that the ConfigMap was created:
@@ -103,6 +105,13 @@ oc get configmap tsf-config -n tsf
 ----
 
 The output shows the `tsf-config` ConfigMap in the `tsf` namespace.
+
+To view the complete ConfigMap structure:
+
+[source,bash]
+----
+oc get configmap tsf-config -n tsf -o yaml
+----
 
 == Configure the GitHub integration
 
@@ -175,11 +184,11 @@ If you are using GitLab instead of GitHub, configure the GitLab integration. Cre
 ----
 oc create secret generic gitlab-auth-secret \
   -n <tenant-namespace> \
-  --from-literal=password=<project-access-token> \
+  --from-literal=password="$GITLAB__TOKEN" \
   --type=kubernetes.io/basic-auth
 ----
 +
-Replace `<tenant-namespace>` with your tenant namespace and `<project-access-token>` with the token you copied.
+The default tenant namespace is `default-tenant`. If multiple namespaces are used, the secret must be created in each namespace where you onboard components. For more information about tenant namespaces, see link:https://konflux-ci.dev/docs/advanced-how-tos/managing/environments/[Managing environments] in the {KonfluxName} documentation.
 
 . Label the secret so that {KonfluxName} can discover it:
 +
@@ -196,10 +205,8 @@ oc label secret gitlab-auth-secret \
 ----
 oc annotate secret gitlab-auth-secret \
   -n <tenant-namespace> \
-  appstudio.redhat.com/scm.host=gitlab.com
+  appstudio.redhat.com/scm.host="$GITLAB__HOST"
 ----
-+
-Replace `gitlab.com` with the hostname of your GitLab instance if you are using a self-hosted instance.
 
 === Verification
 

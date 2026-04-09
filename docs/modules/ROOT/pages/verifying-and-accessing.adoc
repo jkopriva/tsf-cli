@@ -90,15 +90,6 @@ The installer also creates the following supporting namespaces:
 * `rhbk-operator`
 * `rhtpa-operator`
 
-The `tsf-config` ConfigMap in the `tsf` namespace controls which components are installed. Each component has an `enabled` flag and a `manageSubscription` property. Set `manageSubscription` to `false` for any component that is already installed on the cluster.
-
-To view the complete ConfigMap structure:
-
-[source,bash]
-----
-oc get configmap tsf-config -n tsf -o yaml
-----
-
 == Next step
 
 Proceed to xref:getting-started.adoc[Getting started with {TSFShortName}] to onboard your first application.

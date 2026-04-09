@@ -1,7 +1,17 @@
 = Troubleshooting {TSFShortName} installation
+:toc:
 
 Use this guide to diagnose and resolve common issues during {TSFShortName} installation and deployment.
 
+**On this page:**
+
+* <<quay-token-error-during-deployment>>
+* <<cert-manager-subscription-conflict>>
+* <<rhtpa-ui-url-is-not-accessible>>
+* <<deployment-appears-to-hang>>
+* <<browser-fails-to-open-during-github-integration>>
+
+[id="quay-token-error-during-deployment"]
 == Quay token error during deployment
 
 **Symptom:** The `{TSFCli} deploy` command fails at the `tsf-konflux` chart with:
@@ -40,6 +50,7 @@ tsf integration quay \
 tsf deploy
 ----
 
+[id="cert-manager-subscription-conflict"]
 == Cert-Manager subscription conflict
 
 **Symptom:** The deployment fails with a subscription conflict error for the Cert-Manager operator.
@@ -55,6 +66,7 @@ oc edit configmap tsf-config -n tsf
 
 Locate the Cert-Manager entry and change `manageSubscription: true` to `manageSubscription: false`. Then re-run the deployment.
 
+[id="rhtpa-ui-url-is-not-accessible"]
 == {RHTPAName} UI URL is not accessible
 
 **Symptom:** The RHTPA UI URL displayed in the deployment output shows `server%s(<nil>)` or returns an error.
@@ -91,6 +103,7 @@ oc logs -n tsf-tpa deployment/rhtpa-operator
 oc get routes -n tsf-tpa
 ----
 
+[id="deployment-appears-to-hang"]
 == Deployment appears to hang
 
 **Symptom:** The `{TSFCli} deploy` command runs for an extended period without producing any output.
@@ -106,6 +119,7 @@ oc get pods -A --watch
 
 Wait for the deployment to complete. The full process typically takes about 15 minutes.
 
+[id="browser-fails-to-open-during-github-integration"]
 == Browser fails to open during GitHub integration
 
 **Symptom:** The `{TSFCli} integration github --create` command logs an error:
