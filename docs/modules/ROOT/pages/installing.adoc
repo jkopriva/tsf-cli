@@ -160,61 +160,33 @@ NOTE: The installer may log an error about failing to open the browser. This is 
 
 == Configure the GitLab integration
 
-If you are using GitLab instead of GitHub, configure the GitLab integration. Create a Project Access Token for each GitLab project that you want to onboard to {TSFShortName}.
+If you are using GitLab instead of GitHub, configure the GitLab integration. The installer creates the required namespace and secret for the `default-tenant` automatically during deployment.
 
 === Prerequisites
 
 * You have started the {TSFShortName} installer container.
 * You are logged in to the {OCPShortName} cluster.
-* You have a GitLab project that you want to onboard.
+* You have prepared the GitLab variables (`GITLAB__HOST`, `GITLAB__GROUP`, `GITLAB__TOKEN`) in your `tsf.env` file.
 
 === Steps
 
-. In your GitLab project, create a Project Access Token:
-.. Navigate to *Settings* > *Access Tokens*.
-.. Enter a name for the token, for example, `tsf-integration`.
-.. Select the *Maintainer* role.
-.. Select the following scopes: `api`, `read_repository`, `write_repository`.
-.. Click *Create project access token*.
-.. Copy the token value.
-
-. Create a Kubernetes secret in the tenant namespace that contains the GitLab credentials:
+. Configure the GitLab integration:
 +
 [source,bash]
 ----
-oc create secret generic gitlab-auth-secret \
-  -n <tenant-namespace> \
-  --from-literal=password="$GITLAB__TOKEN" \
-  --type=kubernetes.io/basic-auth
-----
-+
-The default tenant namespace is `default-tenant`. If multiple namespaces are used, the secret must be created in each namespace where you onboard components. For more information about tenant namespaces, see link:https://konflux-ci.dev/docs/advanced-how-tos/managing/environments/[Managing environments] in the {KonfluxName} documentation.
-
-. Label the secret so that {KonfluxName} can discover it:
-+
-[source,bash]
-----
-oc label secret gitlab-auth-secret \
-  -n <tenant-namespace> \
-  appstudio.redhat.com/credentials=scm
-----
-
-. Annotate the secret with the GitLab host:
-+
-[source,bash]
-----
-oc annotate secret gitlab-auth-secret \
-  -n <tenant-namespace> \
-  appstudio.redhat.com/scm.host="$GITLAB__HOST"
+tsf integration gitlab \
+  --group="$GITLAB__GROUP" \
+  --host="$GITLAB__HOST" \
+  --token="$GITLAB__TOKEN"
 ----
 
 === Verification
 
-Verify that the secret was created:
+Verify that the GitLab integration secret was created:
 
 [source,bash]
 ----
-oc get secret gitlab-auth-secret -n <tenant-namespace>
+oc get secret tsf-gitlab-integration -n tsf
 ----
 
 == Configure the Quay integration

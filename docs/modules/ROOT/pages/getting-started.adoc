@@ -62,11 +62,13 @@ To view the integration test Custom Resource:
 oc get integrationtestscenarios -n <tenant-namespace>
 ----
 
-. **Creates CI checks** on the pull request. {KonfluxName} creates checks for both GitHub and GitLab. The difference is how the integration with {KonfluxName} is managed: for GitHub, a GitHub App is created ahead of time during installation; for GitLab, the webhook is created when the repository is onboarded. Two checks appear:
+. **Creates CI checks** on the pull request. Two checks appear:
 * One for the build pipeline status
 * One for the integration test pipeline status
 +
 You can click through to view logs and additional information.
++
+For GitLab, the webhook is created and configured in the repository.
 
 IMPORTANT: Do not merge this pull request yet. Configure a release first so you can see the full end-to-end flow.
 
