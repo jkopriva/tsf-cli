@@ -15,7 +15,22 @@ tsf:
       enabled: true
       # Uses the installer's namespace.
       properties:
-        manageSubscription: true
+        manageSubscription: "auto"
+    # Community Konflux Operator  provides the CRDs for the Trusted Software Factory
+    # platform.
+    - name: Konflux
+      enabled: true
+      namespace: konflux-ui
+      properties:
+        manageSubscription: "true"
+    # Red Hat OpenShift Pipelines is a cloud-native CI/CD (Continuous
+    # Integration/Continuous Delivery) solution built on Tekton that automates
+    # application delivery and reduces time to market on Red Hat OpenShift.
+    - name: OpenShift Pipelines
+      enabled: true
+      # Uses the installer's namespace.
+      properties:
+        manageSubscription: "true"
     # Red Hat Trusted Artifact Signer (TAS) enhances software supply chain
     # security by simplifying cryptographic signing and verification of software
     # artifacts like container images, binaries, and documents, leveraging an
@@ -24,22 +39,7 @@ tsf:
       enabled: true
       namespace: tsf-tas
       properties:
-        manageSubscription: true
-    # Red Hat OpenShift Pipelines is a cloud-native CI/CD (Continuous
-    # Integration/Continuous Delivery) solution built on Tekton that automates
-    # application delivery and reduces time to market on Red Hat OpenShift.
-    - name: OpenShift Pipelines
-      enabled: true
-      # Uses the installer's namespace.
-      properties:
-        manageSubscription: true
-    # Community Konflux Operator  provides the CRDs for the Trusted Software Factory
-    # platform.
-    - name: Konflux
-      enabled: true
-      namespace: konflux-ui
-      properties:
-        manageSubscription: true
+        manageSubscription: "true"
     # Red Hat Trusted Profile Analyzer (TPA), which leverages the community-driven
     # Trustification project, helps organizations manage their software supply
     # chain's security by analyzing Software Bills of Materials (SBOMs), vendor
@@ -49,4 +49,4 @@ tsf:
       enabled: true
       namespace: tsf-tpa
       properties:
-        manageSubscription: true
+        manageSubscription: "true"
