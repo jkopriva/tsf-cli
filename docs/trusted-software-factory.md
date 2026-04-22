@@ -103,11 +103,11 @@ Error: upgrade failed: Unable to continue with update: Subscription "openshift-c
 
 #### Root cause
 
-The subscription has already been installed by a third party. Helm does not want to take ownership of the resource.
+One of the subscriptions (Red Hat Certificate Manager in the above example) has already been installed by a third party. Helm does not want to take ownership of the resource.
 
 #### Workaround
 
-* Edit the `tsf-config` ConfigMap in the `tsf` namespace to set `manageSubscription: false` for the Cert-Manager product.
+* Edit the `tsf-config` ConfigMap in the `tsf` namespace to set `manageSubscription: false` or `manageSubscription: auto` for the appropriate product. `auto` will detect if the subscription needs to be installed or not, while `false` will force the bypass of the subscription.
 
 ## Konflux Troubleshooting
 
