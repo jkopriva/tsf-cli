@@ -46,7 +46,8 @@ openshift:
 {{- end }}
 {{- if $tpa.Enabled }}
     - {{ $tpa.Namespace }}
-    {{- if $tpa.Properties.manageSubscription }}
+    {{- $tpaMS := dig "manageSubscription" "false" ($tpa.Properties | default dict) -}}
+    {{- if ne $tpaMS "false" }}
     - rhtpa-operator
     {{- end }}
 {{- end }}
@@ -59,25 +60,25 @@ openshift:
 subscriptions:
   konflux:
     enabled: {{ $konflux.Enabled }}
-    managed: {{ and $konflux.Enabled $konflux.Properties.manageSubscription }}
+    managed: '{{ if $konflux.Enabled }}{{ dig "manageSubscription" "auto" ($konflux.Properties | default dict) | toString }}{{ else }}false{{ end }}'
   openshiftCertManager:
     enabled: {{ $certManager.Enabled }}
-    managed: {{ and $certManager.Enabled $certManager.Properties.manageSubscription }}
+    managed: '{{ if $certManager.Enabled }}{{ dig "manageSubscription" "auto" ($certManager.Properties | default dict) | toString }}{{ else }}false{{ end }}'
   openshiftKeycloak:
     enabled: {{ $keycloakEnabled }}
-    managed: {{ $keycloakEnabled }}
+    managed: '{{ $keycloakEnabled }}'
     operatorGroup:
       targetNamespaces:
         - {{ default "empty" $keycloakNamespace }}
   openshiftPipelines:
     enabled: {{ $pipelines.Enabled }}
-    managed: {{ and $pipelines.Enabled $pipelines.Properties.manageSubscription }}
+    managed: '{{ if $pipelines.Enabled }}{{ dig "manageSubscription" "auto" ($pipelines.Properties | default dict) | toString }}{{ else }}false{{ end }}'
   openshiftTrustedArtifactSigner:
     enabled: {{ $tas.Enabled }}
-    managed: {{ and $tas.Enabled $tas.Properties.manageSubscription }}
+    managed: '{{ if $tas.Enabled }}{{ dig "manageSubscription" "auto" ($tas.Properties | default dict) | toString }}{{ else }}false{{ end }}'
   trustedProfileAnalyzer:
     enabled: {{ $tpa.Enabled }}
-    managed: {{ and $tpa.Enabled $tpa.Properties.manageSubscription }}
+    managed: '{{ if $tpa.Enabled }}{{ dig "manageSubscription" "auto" ($tpa.Properties | default dict) | toString }}{{ else }}false{{ end }}'
 
 #
 # tsf-infrastructure
